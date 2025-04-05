@@ -21,11 +21,19 @@ public class GamePanel extends JPanel implements Runnable {
     //Creating a Clock to keep Game Updating
     Thread gameThread;
 
+    KeyHandler keyH = new KeyHandler();
+
+    int playerX = 100;
+    int playerY = 100;
+    int playerSpeed = 4;
+
 
     public GamePanel(){
         this.setPreferredSize(new Dimension(screenWidth,screenHeight));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
+        this.addKeyListener(keyH);
+        this.setFocusable(true);
     }
 
 
@@ -37,8 +45,38 @@ public class GamePanel extends JPanel implements Runnable {
     public void run() {
         while(gameThread != null){
 
-            System.out.println("Game is on!!");
+            update();
+            repaint();
         }
 
     }
+    public void update(){
+        if(keyH.upPressed == true){
+            playerY-=playerSpeed;
+        }
+        else if(keyH.downPressed == true){
+            playerY+=playerSpeed;
+        }
+        else if(keyH.leftPressed == true){
+            playerX-=playerSpeed;
+        }
+        else if(keyH.rightPressed == true){
+            playerX+=playerSpeed;
+        }
+
+    }
+
+    //paintComponent is an exisiting Method in Java , With graphics as standard class
+    public void paintComponent(Graphics g){
+        super.paintComponent(g);
+
+        Graphics2D g2 = (Graphics2D) g;
+
+        g2.setColor(Color.white);
+        g2.fillRect(playerX,playerY,tileSize,tileSize);
+        g2.dispose();
+
+    }
+
+
 }
