@@ -7,6 +7,8 @@ public class GamePanel extends JPanel implements Runnable {
     //Screen Settings
     final int originalTileSize = 16;
     final int scale = 3;
+
+    int fps = 60;
     //16*16 is too small for our monitors so scaling is required
 
     final int tileSize = originalTileSize * scale; //Single 48 pixel tile
@@ -25,7 +27,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     int playerX = 100;
     int playerY = 100;
-    int playerSpeed = 4;
+    int playerSpeed = 5;
 
 
     public GamePanel(){
@@ -43,10 +45,25 @@ public class GamePanel extends JPanel implements Runnable {
     }
     @Override
     public void run() {
+        double drawInterval = 1000000000/fps;
+        double delta = 0;
+        long lastTime = System.nanoTime();
+        long currentTime;
         while(gameThread != null){
+            currentTime = System.nanoTime();
+            delta += (currentTime - lastTime) / drawInterval;
 
-            update();
-            repaint();
+            lastTime = currentTime;
+
+            if(delta >= 1){
+                update();
+                repaint();
+                delta--;
+            }
+
+
+
+
         }
 
     }
