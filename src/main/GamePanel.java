@@ -1,5 +1,8 @@
 package main;
 
+import entity.Player;
+import tile.TileManager;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -9,9 +12,10 @@ public class GamePanel extends JPanel implements Runnable {
     final int scale = 3;
 
     int fps = 60;
+    TileManager tileM = new TileManager(this);
     //16*16 is too small for our monitors so scaling is required
 
-    final int tileSize = originalTileSize * scale; //Single 48 pixel tile
+    public final int tileSize = originalTileSize * scale; //Single 48 pixel tile
 
     //Screen Size
 
@@ -25,6 +29,8 @@ public class GamePanel extends JPanel implements Runnable {
 
     KeyHandler keyH = new KeyHandler();
 
+    Player player = new Player(this,keyH);
+
     int playerX = 100;
     int playerY = 100;
     int playerSpeed = 5;
@@ -36,6 +42,9 @@ public class GamePanel extends JPanel implements Runnable {
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
+        player.setDefaultValues();
+        player.getPlayerImage();
+
     }
 
 
@@ -68,18 +77,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     }
     public void update(){
-        if(keyH.upPressed == true){
-            playerY-=playerSpeed;
-        }
-        else if(keyH.downPressed == true){
-            playerY+=playerSpeed;
-        }
-        else if(keyH.leftPressed == true){
-            playerX-=playerSpeed;
-        }
-        else if(keyH.rightPressed == true){
-            playerX+=playerSpeed;
-        }
+        player.update();
 
     }
 
@@ -89,8 +87,8 @@ public class GamePanel extends JPanel implements Runnable {
 
         Graphics2D g2 = (Graphics2D) g;
 
-        g2.setColor(Color.white);
-        g2.fillRect(playerX,playerY,tileSize,tileSize);
+        tileM.draw(g2);
+        player.draw(g2);
         g2.dispose();
 
     }
