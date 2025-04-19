@@ -12,15 +12,31 @@ public class Player extends Entity{
 
     GamePanel gp;
     KeyHandler keyH;
+    public final int screenX;
+    public final int screenY;
+
+    public int hasKey = 0;
 
     public Player(GamePanel gp,KeyHandler keyH){
         this.gp = gp;
         this.keyH = keyH;
+        screenX = gp.screenWidth/2-(gp.tileSize/2);
+        screenY = gp.screenHeight/2-(gp.tileSize/2);
+        solidArea = new Rectangle();
+        solidArea.x = 8;
+        solidArea.y = 16;
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
+        solidArea.width = 32;
+        solidArea.height = 32;
+
+        setDefaultValues();
+        getPlayerImage();
     }
 
     public void setDefaultValues(){
-        worldX = 100;
-        worldY = 100;
+        worldX = gp.tileSize *10;
+        worldY = gp.tileSize *10;
         speed = 3;
         direction = "down";
     }
@@ -52,19 +68,63 @@ public class Player extends Entity{
                 spriteCounter = 0;
             }
             if (keyH.upPressed == true) {
-                worldY -= speed;
                 direction = "up";
             } else if (keyH.downPressed == true) {
-                worldY += speed;
                 direction = "down";
             } else if (keyH.leftPressed == true) {
-                worldX -= speed;
                 direction = "left";
             } else if (keyH.rightPressed == true) {
-                worldX += speed;
                 direction = "right";
             }
+
+            collisionOn = false;
+            gp.cChecker.checkTile(this);
+
+            //Check object Collision
+            int objIndex = gp.cChecker.checkObject(this,true);
+            pickUpObject(objIndex);
+
+            if(collisionOn == false){
+                switch(direction){
+                    case "up":
+                        worldY -= speed;
+                        break;
+                    case "down":
+                        worldY += speed;
+                        break;
+                    case "left":
+                        worldX -= speed;
+                        break;
+                    case "right":
+                        worldX += speed;
+                        break;
+                }
+            }
         }
+    }
+
+    public void pickUpObject(int  i){
+        if(i != 999){
+
+            String objectName = gp.obj[i].name;
+
+            switch(objectName){
+                case "Key":
+                    hasKey++;
+                    gp.obj[i] = null;
+                    System.out.println("Key "+hasKey);
+                    break;
+                case "Door":
+                    if(hasKey > 0){
+                        gp.obj[i] = null;
+                        hasKey--;
+                        System.out.println("Key "+hasKey);
+
+                    }
+
+            }
+        }
+
     }
 
     public void draw(Graphics2D g2){
@@ -107,7 +167,7 @@ public class Player extends Entity{
 
         };
 
-        g2.drawImage(image,x,y,gp.tileSize,gp.tileSize,null);
+        g2.drawImage(image,screenX,screenY,gp.tileSize,gp.tileSize,null);
     }
 
 }
