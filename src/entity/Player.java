@@ -19,8 +19,8 @@ public class Player extends Entity{
     }
 
     public void setDefaultValues(){
-        x = 100;
-        y = 100;
+        worldX = 100;
+        worldY = 100;
         speed = 3;
         direction = "down";
     }
@@ -52,16 +52,16 @@ public class Player extends Entity{
                 spriteCounter = 0;
             }
             if (keyH.upPressed == true) {
-                y -= speed;
+                worldY -= speed;
                 direction = "up";
             } else if (keyH.downPressed == true) {
-                y += speed;
+                worldY += speed;
                 direction = "down";
             } else if (keyH.leftPressed == true) {
-                x -= speed;
+                worldX -= speed;
                 direction = "left";
             } else if (keyH.rightPressed == true) {
-                x += speed;
+                worldX += speed;
                 direction = "right";
             }
         }
